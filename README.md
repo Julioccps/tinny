@@ -1,24 +1,24 @@
-# TINY - There Is no Name Yet
+ TINNY - There Is No Name Yet
 > that's a good name actually
 
 ## Proposition
 
 What I'll try to make the OS be:
 
-- Unix like;
-- From scratch(including libc);
+- Unix-like;
+- From scratch (including libc);
 - Modular;
 - Predictable;
-- Reliable?(Maybe not feasible).
+- Reliable? (Maybe not feasible).
 
 ## How?
 
-C + Assembly + x86(Yes, 32 bits).
+C + Assembly + x86 (Yes, 32 bits).
 As for why on each one:
 - C: I want to get better at programming in C;
 - Assembly: It's a bit of a requirement for OS dev;
 - x86 and why 32 bits: The only real target is an old computer that I have, it
-has support to 64 bits, but it only had 4GB anyway, I wouldn't lose anything.
+has support for 64 bits, but it only had 4GB anyway, I wouldn't lose anything.
 
 ## Why?
 
@@ -32,11 +32,11 @@ to system programming, so it's a great way of testing it.
     - [ ] Executable format definition;
     - [ ] Basic tooling;
     - [ ] Syscall definition;
-    - [ ] File System architecture(it's more about choosing how and what I'll
+    - [ ] File System architecture (it's more about choosing how and what I'll
                                    actually do);
 - [ ] Phase 1 - Initial Implementation:
     - [ ] Bootloader;
-    - [ ] Libc initial implementation(Just what's required for basic programs);
+    - [ ] Libc initial implementation (Just what's required for basic programs);
     - [ ] Basic Kernel;
     - [ ] Syscall handler;
     - [ ] File System;
@@ -45,7 +45,7 @@ to system programming, so it's a great way of testing it.
     - [ ] More robust libc;
     - [ ] Stable kernel;
     - [ ] Actual shell programs;
-    - [ ] Start at working with rendering other than VGA text rendering(x86
+    - [ ] Start working with rendering other than VGA text rendering (x86
                                                                         offers
                                                                         that,
                                                                         but we
@@ -59,13 +59,13 @@ to system programming, so it's a great way of testing it.
    - [ ] A C compiler;
    - [ ] A Make clone, just the graph of recipes and dependencies;
    - [ ] A text editor;
-> On that order.
+> In that order.
 - [ ] Phase 3 - "The Feast":
-    - [ ] Networking(unfortunately, it will have to be Wi-Fi, as the target computer does
-                     not have a RJ-45 port)
-    - [ ] Gaming(no more comments);
+    - [ ] Networking (unfortunately, it will have to be Wi-Fi, as the target computer does
+                     not have an RJ-45 port)
+    - [ ] Gaming (no more comments);
     - [ ] Updates on each and everything, made possible, just a connection to the repo
-    and beign able to clone it, and rebuild itself, to finally achieve:
+    and being able to clone it, and rebuild itself, to finally achieve:
 - [ ] Final Goal - Self-Hosting.
 
 ## Project Structure
