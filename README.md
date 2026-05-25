@@ -1,4 +1,4 @@
- TINNY - There Is No Name Yet
+# TINNY - There Is No Name Yet
 > that's a good name actually
 
 ## Proposition
@@ -62,7 +62,7 @@ to system programming, so it's a great way of testing it.
 > In that order.
 - [ ] Phase 3 - "The Feast":
     - [ ] Networking (unfortunately, it will have to be Wi-Fi, as the target computer does
-                     not have an RJ-45 port)
+                     not have an RJ-45 port).
     - [ ] Gaming (no more comments);
     - [ ] Updates on each and everything, made possible, just a connection to the repo
     and being able to clone it, and rebuild itself, to finally achieve:
@@ -87,11 +87,11 @@ to system programming, so it's a great way of testing it.
     └── shell
 ``` 
 
-Notice how there is no source file yet, it's on purpose for now, I want to do it
-the right way, executable format first, then start thinking about actual
+Notice how there is no source file yet; it's on purpose for now. I want to do it
+the right way: executable format first, then start thinking about actual
 implementation.
 
-### Final comments
+### Final Comments
 
 I'll do my best to document everything and share insights inside comments or on
 actual documentation.
