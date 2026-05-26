@@ -17,7 +17,7 @@ struct tfs_inode {
 	u32_t blocks[12];
 	u32_t indirect;
 }__attribute__((aligned(128))); 
-/* Forcing it to be all zeros until 128 bytes
+/* Forcing memory to align struct to 128 bytes
  * TODO look into adding more data to store*/
 
 struct tfs_superblock {
