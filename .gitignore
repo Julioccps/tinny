@@ -1,0 +1,14 @@
+build/
+.cache/
+
+build/*
+.cache/*
+
+*.o
+*.so
+*.img
+*.plist
+
+compile_commands.json
+previous
+
