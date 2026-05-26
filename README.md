@@ -29,8 +29,8 @@ to system programming, so it's a great way of testing it.
 ## Roadmap
 
 - [ ] Phase 0 - Pre-Implementation:
-    - [ ] Executable format definition;
-    - [ ] Basic tooling;
+    - [x] Executable format definition;
+    - [x] Basic tooling;
     - [ ] Syscall definition;
     - [ ] File System architecture (it's more about choosing how and what I'll
                                    actually do);

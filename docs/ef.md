@@ -42,5 +42,27 @@ from other implementations of executable formats.
 |  0x04  |   4   | version  | byte 1: Major version, byte 2: 0x2E, byte 3: Minor version, byte 4: patch number |
 |  0x08  |   4   |  entry   | virtual address of the entry point of the executable |
 |  0x0C  |   4   | ht_count | Number of headers defined |
-|  0x10  |   4   |   flags  | Program flags (to be defined) |
+|  0x10  |   4   |   flags  | Program flags (see below) |
+|  0x14  |   4   | mem_size | Total RAM footprint (inc. Stack/BSS). If 0, use Kernel Default. |
+
+## Flags
+
+| Bit | Name             | Description |
+| --- | ---------------- | ----------- |
+|  0  | HAS_CUSTOM_MEM   | If set, loader must respect `mem_size` |
+|  1  | RELOCATABLE      | Set if the binary can be loaded at any address |
+|  2  | STRICT_ALIGN     | Enforce 4KB page alignment for sections |
+
+## Program Header Table Entry
+
+Each entry in the table describes a single section (e.g., .text, .data).
+
+| Offset | Size | Name   | Description |
+| ------ | ---- | ------ | ----------- |
+|  0x00  |  4   | type   | Section type (0: LOAD, 1: BSS, 2: CONST) |
+|  0x04  |  4   | vaddr  | Target virtual address |
+|  0x08  |  4   | offset | Offset of section data within the file |
+|  0x0C  |  4   | filesz | Size of the section in the file |
+|  0x10  |  4   | memsz  | Size of the section in memory |
+|  0x14  |  4   | flags  | Permissions (e.g., 0x7 for LOAD/RWX, 0x5 for CONST/RX) |
 
