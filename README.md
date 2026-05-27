@@ -101,3 +101,11 @@ implementation.
 
 I'll do my best to document everything and share insights inside comments or on
 actual documentation.
+
+To me, this project is kinda lame, if I'm being completely honest with myself,
+but I still want to do it and have fun while at it.
+
+##### Some quotes for ye'
+> "Admiration comes from understanding."
+> "Complexity is a engineer's problem, the end user shouldn't be the target of not even a bit of that, our true objective is to make the user's experience truly excellent and have nothing that would make any user do anything but play and enjoy it"
+"
