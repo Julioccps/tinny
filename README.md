@@ -70,21 +70,27 @@ to system programming, so it's a great way of testing it.
 
 ## Project Structure
 ```bash
+├── Makefile
 ├── README.md
 ├── docs
 │   ├── arch.md
 │   ├── ef.md
+│   ├── fs.md
 │   └── libc.md
 ├── include
 │   ├── core
+│   │   ├── syscalls.h
+│   │   ├── tef.h
+│   │   └── tfs.h
 │   ├── libc
+│   │   ├── tinasm.h
+│   │   └── tinio.h
 │   └── utils
+│       └── type.h
 └── src
-    ├── apps
     ├── boot
-    ├── kernel
-    ├── libc
-    └── shell
+    │   └── boot.ld
+    └── linker.ld
 ``` 
 
 Notice how there is no source file yet; it's on purpose for now. I want to do it

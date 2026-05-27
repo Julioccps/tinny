@@ -43,5 +43,27 @@ user program should never return from \_start; if somehow does, the kernel
 should kill the process with a segmentation fault.
 
 ## Calling Conventions
+TINNY follows the standard x86 32-bit conventions to ensure compatibility between C and Assembly.
 
-> TODO
+### C Functions (`cdecl`)
+All C functions in the LibC and user programs follow the `cdecl` convention:
+- **Arguments:** Passed on the stack in reverse order (right-to-left).
+- **Return Value:** Placed in the `eax` register.
+- **Stack Cleanup:** The **caller** is responsible for cleaning the stack after the function returns.
+- **Registers:**
+- **Callee-saved:** `ebx`, `esi`, `edi`, `ebp` (must be preserved by the function).
+- **Caller-saved:** `eax`, `ecx`, `edx` (may be modified by the function).
+ 
+### System Calls
+Syscalls use a register-based convention for speed:
+- `eax`: Syscall Number.
+- `ebx`, `ecx`, `edx`, `esi`, `edi`: Arguments 1 through 5.
+- `eax`: Return value (negative values often indicate error codes).
+      
+## Standard Headers
+The LibC is organized into "tin" headers that provide a Unix-like API:
+- `tinasm.h`: The direct bridge to syscalls.
+- `tinio.h`: Buffered I/O, `printf`, `scanf`.
+- `tinstr.h`: String manipulation (`strlen`, `strcpy`).
+- `tinmem.h`: Memory management (`malloc`, `free`).
+- `tindef.h`: Common definitions and macros.
