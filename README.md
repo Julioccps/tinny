@@ -73,14 +73,6 @@ to system programming, so it's a great way of testing it.
 ├── LICENSE
 ├── Makefile
 ├── README.md
-├── build
-│   ├── boot.bin
-│   ├── kernel
-│   │   ├── kernel.o
-│   │   └── syshand.o
-│   ├── kernel.bin
-│   └── kernel.elf
-├── compile_commands.json
 ├── docs
 │   ├── arch.md
 │   ├── ef.md
@@ -96,7 +88,6 @@ to system programming, so it's a great way of testing it.
 │   │   └── tinio.h
 │   └── utils
 │       └── type.h
-├── previous
 ├── src
 │   ├── apps
 │   │   └── shell
@@ -108,12 +99,7 @@ to system programming, so it's a great way of testing it.
 │   ├── libc
 │   │   └── tinasm.S
 │   └── linker.ld
-├── syshand.plist
-├── tags
-├── test.bin
-└── tinny_os.img
 ``` 
-
 
 ### Final Comments
 
