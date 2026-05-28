@@ -35,7 +35,7 @@ to system programming, so it's a great way of testing it.
     - [x] File System architecture (it's more about choosing how and what I'll
                                    actually do);
 - [ ] Phase 1 - Initial Implementation:
-    - [ ] Bootloader;
+    - [x] Bootloader;
     - [ ] Libc initial implementation (Just what's required for basic programs);
     - [ ] Basic Kernel;
     - [ ] Syscall handler;
@@ -114,9 +114,6 @@ to system programming, so it's a great way of testing it.
 └── tinny_os.img
 ``` 
 
-Notice how there is no source file yet; it's on purpose for now. I want to do it
-the right way: executable format first, then start thinking about actual
-implementation.
 
 ### Final Comments
 
