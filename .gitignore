@@ -8,6 +8,7 @@ build/*
 *.so
 *.img
 *.plist
+*.bin
 
 compile_commands.json
 previous
