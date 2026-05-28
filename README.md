@@ -70,8 +70,17 @@ to system programming, so it's a great way of testing it.
 
 ## Project Structure
 ```bash
+├── LICENSE
 ├── Makefile
 ├── README.md
+├── build
+│   ├── boot.bin
+│   ├── kernel
+│   │   ├── kernel.o
+│   │   └── syshand.o
+│   ├── kernel.bin
+│   └── kernel.elf
+├── compile_commands.json
 ├── docs
 │   ├── arch.md
 │   ├── ef.md
@@ -87,10 +96,22 @@ to system programming, so it's a great way of testing it.
 │   │   └── tinio.h
 │   └── utils
 │       └── type.h
-└── src
-    ├── boot
-    │   └── boot.ld
-    └── linker.ld
+├── previous
+├── src
+│   ├── apps
+│   │   └── shell
+│   │       └── main.c
+│   ├── boot
+│   │   └── bootloader.asm
+│   ├── kernel
+│   │   └── kernel.c
+│   ├── libc
+│   │   └── tinasm.S
+│   └── linker.ld
+├── syshand.plist
+├── tags
+├── test.bin
+└── tinny_os.img
 ``` 
 
 Notice how there is no source file yet; it's on purpose for now. I want to do it
