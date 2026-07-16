@@ -13,20 +13,20 @@ each and every basic function;
 and will be used in most if not all **tin** adjecent header files inside the libc 
 implementation.
 
-- Like in other operating systems, it's it's valid to mention that the kernel's 
-syscall implementation is different from the Assembly backend of the libc, as 
-the libc should not need to use x86 Real Mode, by the fact that by the time user 
-programs start to run, The CPU is in protected mode ring 3 with no path back. 
-worth noting though, the security boundary is enforced by the hardware privilege
-model, not by convention; [see also](arch.md).
+- Like in other operating systems, it's valid to mention that the kernel's 
+syscall implementation is different from the Assembly backend of the libc:
+user programs cannot reach BIOS services or privileged instructions — by the
+time they run, the CPU is in protected mode ring 3 with no path back. The
+only way into the kernel is `int 0x80`, and the boundary is enforced by the
+hardware privilege model, not by convention; [see also](arch.md).
 
 ## Second Component: Actual C implementation
 
 - As stated in the previous component, there will be an actual implementation of
-each function the developer may need using the Assmebly backend, but how that 
+each function the developer may need using the Assembly backend, but how that 
 should, and will work: using the header ([tinasm.h](../include/libc/tinasm.h))
-as a wrapper to the the Assembly backend, the functions will be developed in C
-for maintainment reasons.
+as a wrapper to the Assembly backend, the functions will be developed in C
+for maintainability reasons.
 
 ## \_start Contract
 
@@ -34,7 +34,7 @@ When the kernel transfers to an user program, it jumps directly to the \_start
 the entry point is defined by the libc, not `main`, the esp (the top of the 
 stack) points to `argc`, which is the integer representation of the number of 
 command-line arguments, the `argv` right above that, in memory, which is an array 
-of null-terminated strings, and above that sitis `envp`, the environment,
+of null-terminated strings, and above that sits `envp`, the environment,
 structured the same way `argv` is; an array of `KEY=VALUE` null-terminated
 string pointers.
 `_start` reads these from the stack, then calls `main(argc, argv, envp)` when

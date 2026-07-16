@@ -1,4 +1,4 @@
-# Exectuable Format
+# Executable Format
 
 I'm going towards a mixture of various approaches, I'll borrow a thing or two
 from other implementations of executable formats.
@@ -32,7 +32,7 @@ from other implementations of executable formats.
 ```
 - The idea of a header table comes from Microsoft's PE design;
 - The idea of supporting multiple sections from ELF;
-- And the rigid design from Apple's March-O.
+- And the rigid design from Apple's Mach-O.
 
 ## File Header
 
@@ -50,8 +50,14 @@ from other implementations of executable formats.
 | Bit | Name             | Description |
 | --- | ---------------- | ----------- |
 |  0  | HAS_CUSTOM_MEM   | If set, loader must respect `mem_size` |
-|  1  | RELOCATABLE      | Set if the binary can be loaded at any address |
+|  1  | RELOCATABLE      | **Reserved for v2** (see OBS. below) |
 |  2  | STRICT_ALIGN     | Enforce 4KB page alignment for sections |
+
+> OBS.: `RELOCATABLE` is reserved because the format does not define a
+> relocation table yet — a loader would have no way to fix up absolute
+> addresses inside the binary. Until v2 specs one (or mandates PIC code
+> for the flag), v1 binaries load at the `vaddr` in their program headers
+> and v1 loaders must reject a binary with this bit set.
 
 ## Program Header Table Entry
 

@@ -12,7 +12,7 @@ solution for fragmentation.
 
 | Size | Name   | Description |
 | ---- | ------ | ----------- |
-|  2   | mode   | Permision + type (file or dir) |
+|  2   | mode   | Permission + type (file or dir) |
 |  2   | nlinks | Number of names pointing to this inode |
 |  4   | uid    | Owner ID    |
 |  4   | gid    | Group ID    |
@@ -25,6 +25,11 @@ solution for fragmentation.
 
 > OBS.: I'll do time with 64 bits, so I don't have an expiration date for my
 > files
+
+> OBS. 2: The fields above sum to 92 bytes, which is an awkward stride. The
+> on-disk inode is padded to **128 bytes**, so the inode table math stays
+> clean (32 inodes per 4KB block) and v2 fields — a double-indirect pointer,
+> for one — already have somewhere to live.
 
 ## Superblock
 The Superblock defines the global state of the filesystem. Located at Sector 1 (Sector 0 is Boot).
@@ -57,5 +62,17 @@ Directory entries are stored within the data blocks of an "Inode Type: Directory
 4.  **Block Bitmap** (1 block)
 5.  **Inode Table** (N blocks)
 6.  **Data Blocks** (The rest)
+
+## Limits (v1, deliberate)
+
+- **Max file size** = `(12 + block_size/4) * block_size`.
+  With 4KB blocks: `12*4KB + 1024*4KB` ≈ **4.14 MB** per file.
+- The double-indirect pointer is deferred to v2; the inode padding (see
+  OBS. 2 above) reserves the space for it. If self-hosting ever needs files
+  bigger than ~4MB, that's the upgrade path.
+- One block each for the inode and block bitmaps caps the FS at
+  `block_size * 8` blocks/inodes (e.g. 32768 blocks = 128MB at 4KB blocks) —
+  fine for the target machine, recorded here so it's a choice and not a
+  surprise.
 
 

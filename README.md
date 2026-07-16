@@ -36,9 +36,12 @@ to system programming, so it's a great way of testing it.
                                    actually do);
 - [ ] Phase 1 - Initial Implementation:
     - [x] Bootloader;
+    - [x] Kernel bring-up (IDT, GDT, TSS — see docs/kernel.md);
     - [ ] Libc initial implementation (Just what's required for basic programs);
     - [ ] Basic Kernel;
     - [ ] Syscall handler;
+    - [ ] Memory management (physical allocator + paging — fork/mmap/brk
+                            depend on it, so it comes before them);
     - [ ] File System;
     - [ ] First program, a shell;
 - [ ] Phase 2 - Filling the House:
@@ -61,45 +64,30 @@ to system programming, so it's a great way of testing it.
    - [ ] A text editor;
 > In that order.
 - [ ] Phase 3 - "The Feast":
-    - [ ] Networking (unfortunately, it will have to be Wi-Fi, as the target computer does
-                     not have an RJ-45 port).
+    - [ ] Networking (the target computer has no RJ-45 port, so either way a
+                     USB stack comes first; USB-Ethernet vs Wi-Fi gets decided
+                     when I'm actually there. The TCP/IP stack itself can be
+                     developed earlier in QEMU against an emulated NIC).
     - [ ] Gaming (no more comments);
     - [ ] Updates on each and everything, made possible, just a connection to the repo
     and being able to clone it, and rebuild itself, to finally achieve:
 - [ ] Final Goal - Self-Hosting.
 
 ## Project Structure
-```bash
-├── LICENSE
-├── Makefile
-├── README.md
-├── docs
-│   ├── arch.md
-│   ├── ef.md
-│   ├── fs.md
-│   └── libc.md
-├── include
-│   ├── core
-│   │   ├── syscalls.h
-│   │   ├── tef.h
-│   │   └── tfs.h
-│   ├── libc
-│   │   ├── tinasm.h
-│   │   └── tinio.h
-│   └── utils
-│       └── type.h
-├── src
-│   ├── apps
-│   │   └── shell
-│   │       └── main.c
-│   ├── boot
-│   │   └── bootloader.asm
-│   ├── kernel
-│   │   └── kernel.c
-│   ├── libc
-│   │   └── tinasm.S
-│   └── linker.ld
-``` 
+
+By purpose, not by file (files change too often to be listed here):
+
+| Path | What lives there |
+| ---- | ---------------- |
+| `src/boot/` | Stage 1 bootloader (NASM, the 512-byte MBR) |
+| `src/kernel/` | The kernel: entry point, GDT/TSS, IDT, C kernel |
+| `src/libc/` | Libc: Assembly backend + C implementation |
+| `src/apps/` | User programs (the shell starts here) |
+| `src/linker.ld` | Kernel linker script (links at 1MB) |
+| `include/core/` | Kernel-facing specs: syscalls, TEF, TFS headers |
+| `include/libc/` | Libc headers (the `tin*` family) |
+| `include/utils/` | Shared type definitions |
+| `docs/` | Design docs, one per subsystem |
 
 ### Final Comments
 
@@ -112,5 +100,4 @@ but I still want to do it and have fun while at it.
 ##### Some quotes for ya'
 > "Admiration comes from understanding."
 
-> "Complexity is a engineer's problem, the end user shouldn't be the target of not even a bit of that, our true objective is to make the user's experience truly excellent and have nothing that would make any user do anything but play and enjoy it"
-"
+> "Complexity is an engineer's problem, the end user shouldn't be the target of not even a bit of that, our true objective is to make the user's experience truly excellent and have nothing that would make any user do anything but play and enjoy it"
