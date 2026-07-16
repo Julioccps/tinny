@@ -30,7 +30,7 @@ _start:
 	out 0x92, al
 	; Disable Interrupts and Load GDT
 	cli	; Disable BIOS Interrupts before leaving Real Mode
-	lgdt [gdt_descriptor] 
+	lgdt [gdt_descriptor]
 	; Turn ON Protected Mode (Set bit 0 of CR0)
 	mov eax, cr0
 	or eax, 1
@@ -75,24 +75,24 @@ init_pm:
 	jmp 0x100000
 
 ; Flat Model GDT Data Structures
-gdt_start:	
+gdt_start:
 	dd 0x0	; Null Descriptor (Required)
 	dd 0x0
-	
+
 gdt_code:				; Code Segment Descriptor (Offset 0x08)
 	dw 0xFFFF			; Limit (low 16 bits)
 	dw 0x0000			; Base (low 16 bits)
-	db 0x00				; Base (next 8 bits)	
-	db 10011010b	; Access byte (Exec/Read, Ring 0)
-	db 11001111b	; Granularity (4KB Blocks, 32-bits protected)
+	db 0x00				; Base (next 8 bits)
+	db 10011010b	    ; Access byte (Exec/Read, Ring 0)
+	db 11001111b	    ; Granularity (4KB Blocks, 32-bits protected)
 	db 0x00				; Base (high 8 bits)
 
 gdt_data:				; Data Segment Descriptor (Offset 0x10)
 	dw 0xFFFF			; Limit (low 16 bits)
 	dw 0x0000			; Base (low 16 bits)
-	db 0x00				; Base (next 8 bits)	
-	db 10010010b	; Access byte (Read/Write, Ring 0)
-	db 11001111b	; Granularity (4KB Blocks, 32-bits protected)
+	db 0x00				; Base (next 8 bits)
+	db 10010010b	    ; Access byte (Read/Write, Ring 0)
+	db 11001111b	    ; Granularity (4KB Blocks, 32-bits protected)
 	db 0x00				; Base (high 8 bits)
 
 gdt_end:
