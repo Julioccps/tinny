@@ -3,11 +3,20 @@
 
 .text
 _start:
+    # Switch to the kernel's own stack before anything pushes; the
+    # bootloader's 0x90000 is abandoned here.
+    movl $kernel_stack_top, %esp
+    call gdt_setup
+    # kernel GDT + TSS, ltr (gdt.S)
     call idt_setup
     # installs exceptions 0-31 + syscall gate 0x80 (idt.S)
     # call fs_init ; future, Not now
     call kmain
-    ret
+    # Nothing to return to (the bootloader jumped here, it didn't call),
+    # so if kmain ever returns: halt cleanly.
+    cli
+1:  hlt
+    jmp 1b
 
 .globl syscall_handler
 syscall_handler:
