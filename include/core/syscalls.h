@@ -16,9 +16,9 @@
 #define SYS_MMAP			10
 #define SYS_MUNMAP		    11
 #define SYS_MPROTECT    	12
-/* 13-15 reserved
- * for: select, poll and
- * ioctl */
+#define SYS_SELECT          13
+#define SYS_POLL            14
+#define SYS_IOCTL           15
 #define SYS_STAT			16
 #define SYS_LSEEK			17
 #define SYS_DUP				18
