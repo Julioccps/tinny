@@ -85,7 +85,7 @@ By purpose, not by file (files change too often to be listed here):
 | `src/apps/` | User programs (the shell starts here) |
 | `src/linker.ld` | Kernel linker script (links at 1MB) |
 | `include/core/` | Kernel-facing specs: syscalls, TEF, TFS headers |
-| `include/libc/` | Libc headers (the `tin*` family) |
+| `include/libc/` | Libc headers (standard names: `stdio.h`, `string.h`, ... for portability) |
 | `include/utils/` | Shared type definitions |
 | `docs/` | Design docs, one per subsystem |
 

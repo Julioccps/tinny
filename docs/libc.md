@@ -9,9 +9,9 @@ We'll have 2 major components, let's talk about them one by one.
 - Each function will be tied into a syscall or multiple ones in a specific order
 the Assembly backend will be exactly that, that bare-bones implementation of
 each and every basic function;
-- Those basic functions will be defined inside [tinasm.h](../include/libc/tinasm.h) 
-and will be used in most if not all **tin** adjecent header files inside the libc 
-implementation.
+- Those basic functions (the `sys_*` family, implemented in `tinasm.S`) are
+declared inside [unistd.h](../include/libc/unistd.h) as a TINNY extension,
+and are what every standard function is built on top of.
 
 - Like in other operating systems, it's valid to mention that the kernel's 
 syscall implementation is different from the Assembly backend of the libc:
@@ -23,10 +23,13 @@ hardware privilege model, not by convention; [see also](arch.md).
 ## Second Component: Actual C implementation
 
 - As stated in the previous component, there will be an actual implementation of
-each function the developer may need using the Assembly backend, but how that 
-should, and will work: using the header ([tinasm.h](../include/libc/tinasm.h))
-as a wrapper to the Assembly backend, the functions will be developed in C
-for maintainability reasons.
+each function the developer may need using the Assembly backend: the standard
+functions are developed in C on top of the `sys_*` wrappers, for
+maintainability reasons.
+- **Error convention** (the glue that makes ported code work): the kernel
+returns negative error codes; the C wrappers translate with
+`if (ret < 0) { errno = -ret; return -1; }`. Error values live in
+[errno.h](../include/libc/errno.h).
 
 ## \_start Contract
 
@@ -61,9 +64,27 @@ Syscalls use a register-based convention for speed:
 - `eax`: Return value (negative values often indicate error codes).
       
 ## Standard Headers
-The LibC is organized into "tin" headers that provide a Unix-like API:
-- `tinasm.h`: The direct bridge to syscalls.
-- `tinio.h`: Buffered I/O, `printf`, `scanf`.
-- `tinstr.h`: String manipulation (`strlen`, `strcpy`).
-- `tinmem.h`: Memory management (`malloc`, `free`).
-- `tindef.h`: Common definitions and macros.
+
+The public headers use the **standard names** — that's the whole portability
+play: existing software `#include <stdio.h>`, so if TINNY's libc answers to
+the same names with the same signatures, porting becomes "compile it" instead
+of "rewrite it". The rule: any function a header declares must behave exactly
+like the standard says, or not exist at all — missing is honest (link error),
+different is a lie.
+
+- `unistd.h`: POSIX layer (`write`, `read`, `fork`, ...) + the `sys_*` raw
+  backend as a TINNY extension.
+- `stdio.h`: I/O — v1 is `putchar`/`puts`/`printf`; `FILE` and friends
+  arrive with the filesystem.
+- `string.h`: `strlen`, `strcpy`, ... and the `mem*` family (the standard
+  puts them here, not in a memory header).
+- `stdlib.h`: `malloc`/`free`, `exit`, `abort`, conversions.
+- `errno.h`: error codes + the errno convention.
+- `fcntl.h`: `open` and its `O_*` flags (POSIX puts it here, not unistd).
+
+Provided by the compiler (freestanding), not by us: `stddef.h`, `stdint.h`,
+`stdarg.h` — until self-hosting forces our own compiler to supply them.
+
+The **tin** identity lives on in the implementation: `tinasm.S` is the
+Assembly backend, and internal helpers get the `tin_` prefix. Boring outside,
+TINNY inside.
