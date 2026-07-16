@@ -14,11 +14,21 @@ struct tfs_inode {
 	u64_t atime;
 	u64_t mtime;
 	u64_t ctime;
-	u32_t blocks[12];
-	u32_t indirect;
-}__attribute__((aligned(128))); 
-/* Forcing memory to align struct to 128 bytes
- * TODO look into adding more data to store*/
+	u32_t blocks[12];   /* 12 direct pointers. Conventions: for device
+	                     * inodes blocks[0] holds major/minor; for short
+	                     * symlinks (< 52 bytes) the target is stored
+	                     * inline in this whole pointer area */
+	u32_t indirect;     /* single-indirect pointer */
+	u32_t dindirect;    /* double-indirect pointer (v1: reserved, not
+	                     * implemented -- driver must reject, not ignore) */
+	u32_t flags;        /* immutable / append-only / no-atime, etc. */
+	u32_t nblocks;      /* allocated block count (sparse files, st_blocks) */
+	u32_t checksum;     /* CRC of this inode, computed with this field = 0 */
+	u8_t  reserved[20]; /* zero-filled, room for v2 */
+}__attribute__((aligned(128)));
+/* Forcing memory to align struct to 128 bytes: fields sum to 108, the
+ * reserved bytes bring it to exactly 128 -> 32 inodes per 4KB block. */
+_Static_assert(sizeof(struct tfs_inode) == 128, "on-disk inode must be 128 bytes");
 
 struct tfs_superblock {
 	u32_t magic;

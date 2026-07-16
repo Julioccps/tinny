@@ -20,16 +20,28 @@ solution for fragmentation.
 |  8   | atime  | Access time |
 |  8   | mtime  | Modify time |
 |  8   | ctime  | Create time |
-|  48  | blocks | 12 direct pointers (4 bytes each) |
-|  4   | iblock | 1 indirect pointer |
+|  48  | blocks    | 12 direct pointers (4 bytes each) |
+|  4   | indirect  | Single-indirect pointer |
+|  4   | dindirect | Double-indirect pointer (v1: reserved, not implemented) |
+|  4   | flags     | Inode flags (immutable, append-only, no-atime, ...) |
+|  4   | nblocks   | Allocated block count (sparse files, `st_blocks`) |
+|  4   | checksum  | CRC of the inode, computed with this field zeroed |
+|  20  | reserved  | Zero-filled, room for v2 |
 
 > OBS.: I'll do time with 64 bits, so I don't have an expiration date for my
 > files
 
-> OBS. 2: The fields above sum to 92 bytes, which is an awkward stride. The
-> on-disk inode is padded to **128 bytes**, so the inode table math stays
-> clean (32 inodes per 4KB block) and v2 fields — a double-indirect pointer,
-> for one — already have somewhere to live.
+> OBS. 2: The fields sum to 108 bytes; the reserved bytes pad the on-disk
+> inode to exactly **128 bytes**, so the inode table math stays clean
+> (32 inodes per 4KB block) and v2 fields already have somewhere to live.
+> `_Static_assert` in [tfs.h](../include/core/tfs.h) enforces this.
+
+> OBS. 3: Two conventions reuse the pointer area instead of costing bytes:
+> for **device inodes** (mode says char/block device) there is no file
+> content, so `blocks[0]` holds the major/minor device numbers; for
+> **fast symlinks** with targets shorter than 52 bytes (13 pointers * 4),
+> the target path is stored inline in the pointer area instead of wasting
+> a whole data block on a short string.
 
 ## Superblock
 The Superblock defines the global state of the filesystem. Located at Sector 1 (Sector 0 is Boot).
@@ -65,11 +77,13 @@ Directory entries are stored within the data blocks of an "Inode Type: Directory
 
 ## Limits (v1, deliberate)
 
-- **Max file size** = `(12 + block_size/4) * block_size`.
+- **Max file size (v1 driver)** = `(12 + block_size/4) * block_size` —
+  the driver implements up to the single-indirect pointer.
   With 4KB blocks: `12*4KB + 1024*4KB` ≈ **4.14 MB** per file.
-- The double-indirect pointer is deferred to v2; the inode padding (see
-  OBS. 2 above) reserves the space for it. If self-hosting ever needs files
-  bigger than ~4MB, that's the upgrade path.
+- The **layout** already reserves `dindirect`; when the driver implements it,
+  the file-size ceiling effectively becomes the filesystem size. Until then,
+  a write that would need it must fail loudly ("file too large"), never
+  silently ignore the field.
 - One block each for the inode and block bitmaps caps the FS at
   `block_size * 8` blocks/inodes (e.g. 32768 blocks = 128MB at 4KB blocks) —
   fine for the target machine, recorded here so it's a choice and not a
