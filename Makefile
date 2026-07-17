@@ -15,7 +15,10 @@ TRIPLE  ?=
 ASFLAGS := -f bin
 CFLAGS := -m32 -Wall -Wextra -O2 -I$(INCLUDE_DIR) -nostdlib -nostartfiles \
 				-no-pie -fno-pic -ffreestanding $(if $(TRIPLE),--target=$(TRIPLE))
-K_LDFLAGS := -T$(SRC_DIR)/linker.ld $(if $(TRIPLE),-fuse-ld=lld)
+# -static: no dynamic linker/.interp — a freestanding kernel has no shared libs.
+# Without it the linux-gnu target emits a .interp section at the image base,
+# ahead of the entry point.
+K_LDFLAGS := -static -T$(SRC_DIR)/linker.ld $(if $(TRIPLE),-fuse-ld=lld)
 
 KERNEL_SRCS_C := $(wildcard $(SRC_DIR)/kernel/*.c)
 KERNEL_SRCS_S := $(wildcard $(SRC_DIR)/kernel/*.S)

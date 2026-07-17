@@ -1,7 +1,9 @@
 #include "core/syscalls.h"
 .globl _start
 
-.text
+# Entry point lives in its own section so the linker script can place it at
+# the very start of the image (0x100000) — the bootloader jmps straight there.
+.section .text.boot
 _start:
     # Switch to the kernel's own stack before anything pushes the
     # bootloader's 0x90000 is abandoned here.
@@ -18,6 +20,7 @@ _start:
 1:  hlt
     jmp 1b
 
+.text
 .globl syscall_handler
 syscall_handler:
     pushal
