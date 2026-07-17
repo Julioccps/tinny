@@ -12,9 +12,8 @@
 #ifndef __ASSEMBLER__
 
 #include <stddef.h> /* size_t (compiler-provided, freestanding-safe) */
-#include "utils/type.h"
-
-typedef isize_t ssize_t; /* until a proper sys/types.h exists */
+#include <stdint.h> /* uint32_t */
+#include <utils/type.h> /* pid_t, off_t, ssize_t (POSIX, no sys/types.h yet) */
 
 /* --- Standard POSIX subset (v1) --- */
 
@@ -41,16 +40,16 @@ off_t   lseek(int fd, off_t offset, int whence);
 
 void sys_exit(int exit_code);
 int sys_fork(void); // TODO Look into if fork generates a return value
-int sys_read(u32_t fd, char *buf, usize_t count);
-int sys_write(u32_t fd, const char *buf, usize_t count);
+int sys_read(uint32_t fd, char *buf, size_t count);
+int sys_write(uint32_t fd, const char *buf, size_t count);
 int sys_open(const char* filename, int flags, int mode);
-int sys_close(u32_t fd);
+int sys_close(uint32_t fd);
 int sys_waitpid(pid_t pid, int* start_addr, int options);
 int sys_execve(const char* filename, const char *const *argv, const char *const *envp);
-int sys_brk(usize_t brk);
+int sys_brk(size_t brk);
 pid_t sys_getpid(void);
-void *sys_mmap(void *addr, usize_t len, int prot, int flags, int fd, off_t offset);
-int sys_munmap(void *addr, usize_t len);
+void *sys_mmap(void *addr, size_t len, int prot, int flags, int fd, off_t offset);
+int sys_munmap(void *addr, size_t len);
 
 #endif
 #endif

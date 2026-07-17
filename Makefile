@@ -1,5 +1,6 @@
 SRC_DIR := src
 INCLUDE_DIR := include
+CLIBC_DIR := $(INCLUDE_DIR)/libc
 BUILD_DIR := build
 
 # CC and AS use := because they are built-in make variables (default cc/as);
@@ -13,8 +14,9 @@ OBJCOPY ?= objcopy
 # clang emit ELF, honor the linker script, and link with ld.lld.
 TRIPLE  ?=
 ASFLAGS := -f bin
-CFLAGS := -m32 -Wall -Wextra -O2 -I$(INCLUDE_DIR) -nostdlib -nostartfiles \
-				-no-pie -fno-pic -ffreestanding $(if $(TRIPLE),--target=$(TRIPLE))
+CFLAGS := -m32 -Wall -Wextra -O2 -I$(INCLUDE_DIR) -I$(CLIBC_DIR) -nostdlib \
+				-nostartfiles -no-pie -fno-pic -ffreestanding \
+				$(if $(TRIPLE),--target=$(TRIPLE))
 # -static: no dynamic linker/.interp — a freestanding kernel has no shared libs.
 # Without it the linux-gnu target emits a .interp section at the image base,
 # ahead of the entry point.
@@ -30,6 +32,12 @@ KERNEL_ELF := $(BUILD_DIR)/kernel.elf
 KERNEL_BIN := $(BUILD_DIR)/kernel.bin
 BOOT_BIN := $(BUILD_DIR)/boot.bin
 BOOT_SRC := $(SRC_DIR)/boot/bootloader.asm
+
+# The kernel links only the freestanding libc (pure computation, no syscalls):
+# string/ (mem*, str*) is shared with the userland libc. stdio/ etc. are
+# backend-specific (putchar -> write) and belong to userland only.
+KLIBC_SRCS := $(wildcard $(SRC_DIR)/libc/string/*.c)
+KERNEL_OBJS += $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(KLIBC_SRCS))
 
 .PHONY: all clean run
 

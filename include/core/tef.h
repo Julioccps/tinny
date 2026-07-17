@@ -1,7 +1,7 @@
 #ifndef TEF_H
 #define TEF_H
 
-#include "utils/type.h"
+#include <stdint.h>
 
 #define TEF_MAGIC 0x46455407 /* "\aTEF" in little-endian */
 
@@ -22,21 +22,21 @@
 #define TEF_PERM_RWX (TEF_PERM_R | TEF_PERM_W | TEF_PERM_X)
 
 struct _TEF_FILE_HEADER {
-	u32_t tef_magic;
-	u32_t tef_version;
-	u32_t entry_point;
-	u32_t header_table_count;
-	u32_t flags;
-	u32_t mem_size;
+	uint32_t tef_magic;
+	uint32_t tef_version;
+	uint32_t entry_point;
+	uint32_t header_table_count;
+	uint32_t flags;
+	uint32_t mem_size;
 };
 
 struct _TEF_PROGRAM_HEADER {
-	u32_t type;
-	u32_t vaddr;
-	u32_t offset;
-	u32_t filesz;
-	u32_t memsz;
-	u32_t flags;
+	uint32_t type;
+	uint32_t vaddr;
+	uint32_t offset;
+	uint32_t filesz;
+	uint32_t memsz;
+	uint32_t flags;
 };
 
 #endif
