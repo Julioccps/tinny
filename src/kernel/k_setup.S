@@ -1,4 +1,5 @@
-#include "core/syscalls.h"
+#include <core/syscalls.h>
+
 .globl _start
 
 # Entry point lives in its own section so the linker script can place it at
