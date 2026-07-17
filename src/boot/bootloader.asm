@@ -28,6 +28,33 @@ _start:
 	in al, 0x92
 	or al, 0x02
 	out 0x92, al
+.e820:
+    xor ax, ax
+    mov es, ax
+    mov di, 0x8004
+    xor ebx, ebx
+    xor bp, bp
+.e820.nf: ; Not First
+    mov eax, 0xE820
+    mov ecx, 24
+    mov edx, 0x534D4150
+    int 0x15
+    jc  .e820.done
+    cmp eax, 0x534D4150
+    jne .e820.fail
+    add di, 24
+    inc bp
+    test ebx, ebx
+    jnz .e820.nf
+    jmp .e820.done
+.e820.fail:
+    cli
+    mov si, memory_error_msg
+    call print_str
+    jmp .e820.fail
+
+.e820.done:
+    mov [0x8000], bp
 	; Disable Interrupts and Load GDT
 	cli	; Disable BIOS Interrupts before leaving Real Mode
 	lgdt [gdt_descriptor]
@@ -39,9 +66,10 @@ _start:
 	; 0x08 points to Code Segment Descriptor of GDT
 	jmp 0x08:init_pm
 
+
 disk_error:
 	cli	; Disable BIOS Interrupts before halting
-	mov si, error_msg
+	mov si, disk_error_msg
 	call print_str
 	jmp $
 
@@ -101,7 +129,8 @@ gdt_descriptor:
 	dw gdt_end - gdt_start - 0x01
 	dd gdt_start
 
-error_msg db "Disk Error", 0x0A, 0x00
+disk_error_msg db "Disk Error", 0x0A, 0x00
+memory_error_msg db "Failed at Query System Address Map", 0x0A, 0x00
 boot_drive db 0x00
 times 510-($-$$) db 0x00
 dw 0xAA55
