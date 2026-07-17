@@ -3,14 +3,14 @@
 
 .text
 _start:
-    # Switch to the kernel's own stack before anything pushes; the
+    # Switch to the kernel's own stack before anything pushes the
     # bootloader's 0x90000 is abandoned here.
     movl $kernel_stack_top, %esp
     call gdt_setup
     # kernel GDT + TSS, ltr (gdt.S)
     call idt_setup
     # installs exceptions 0-31 + syscall gate 0x80 (idt.S)
-    # call fs_init ; future, Not now
+    # call fs_init # future, Not now
     call kmain
     # Nothing to return to (the bootloader jumped here, it didn't call),
     # so if kmain ever returns: halt cleanly.
@@ -69,4 +69,26 @@ syscall_handler:
     je sys_getcwd
     popal
     iretl
-# TODO: Create the syscalls that don't need the file system yet.
+sys_exit:
+sys_fork:
+sys_read:
+sys_write:
+sys_open:
+sys_close:
+sys_waitpid:
+sys_execve:
+sys_brk:
+sys_getpid:
+sys_mmap:
+sys_munmap:
+sys_mprotect:
+sys_select:
+sys_poll:
+sys_ioctl:
+sys_stat:
+sys_lseek:
+sys_dup:
+sys_dup2:
+sys_pipe:
+sys_chdir:
+sys_getcwd:
