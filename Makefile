@@ -2,12 +2,20 @@ SRC_DIR := src
 INCLUDE_DIR := include
 BUILD_DIR := build
 
-CC := clang
-AS := nasm
+# CC and AS use := because they are built-in make variables (default cc/as);
+# ?= would not override make's built-in value. Command-line overrides still win.
+CC      := clang
+AS      := nasm
+OBJCOPY ?= objcopy
+# TRIPLE: leave empty on a host whose clang already targets ELF (Linux).
+# On a host that defaults elsewhere (e.g. Windows/MSVC), set an ELF target,
+# e.g. `make TRIPLE=i686-unknown-linux-gnu OBJCOPY=llvm-objcopy`, which makes
+# clang emit ELF, honor the linker script, and link with ld.lld.
+TRIPLE  ?=
 ASFLAGS := -f bin
 CFLAGS := -m32 -Wall -Wextra -O2 -I$(INCLUDE_DIR) -nostdlib -nostartfiles \
-				-no-pie -fno-pic -ffreestanding
-K_LDFLAGS := -T$(SRC_DIR)/linker.ld
+				-no-pie -fno-pic -ffreestanding $(if $(TRIPLE),--target=$(TRIPLE))
+K_LDFLAGS := -T$(SRC_DIR)/linker.ld $(if $(TRIPLE),-fuse-ld=lld)
 
 KERNEL_SRCS_C := $(wildcard $(SRC_DIR)/kernel/*.c)
 KERNEL_SRCS_S := $(wildcard $(SRC_DIR)/kernel/*.S)
@@ -30,7 +38,7 @@ $(TARGET): $(BOOT_BIN) $(KERNEL_BIN)
 	truncate -s 33280 $(TARGET)
 
 $(KERNEL_BIN): $(KERNEL_ELF)
-	objcopy -O binary $< $@
+	$(OBJCOPY) -O binary $< $@
 
 $(KERNEL_ELF): $(KERNEL_OBJS)
 	$(CC) $(CFLAGS) $(K_LDFLAGS) -o $@ $^
